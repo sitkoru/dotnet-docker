@@ -7,7 +7,7 @@ RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-trace
 RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-dump
 RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-counters
 
-FROM DOTNET_RUNTIME_IMAGE:${DOTNET_VERSION} as base
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} as base
 
 RUN apt-get update \
     && apt-get upgrade -y \
