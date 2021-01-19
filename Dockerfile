@@ -1,13 +1,14 @@
-ARG DOTNET_VERSION=latest
+ARG RUNTIME_VERSION=latest
+ARG SDK_VERSION=latest
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS tools-install
+FROM mcr.microsoft.com/dotnet/sdk:${SDK_VERSION} AS tools-install
 
 RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-sos
 RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-trace
 RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-dump
 RUN dotnet tool install --tool-path /dotnetcore-tools dotnet-counters
 
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} as base
+FROM mcr.microsoft.com/dotnet/aspnet:${RUNTIME_VERSION} as base
 
 RUN apt-get update \
     && apt-get upgrade -y \
