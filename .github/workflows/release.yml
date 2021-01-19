@@ -26,8 +26,8 @@ jobs:
           TAGS_CHROME_NEWRELIC="$${DOCKER_IMAGE}:${VERSION}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-newrelic,${DOCKER_IMAGE}:newrelic-chrome"
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
-          RUNTIME_VERSION=$(cat releases.json | /opt/jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.version")
-          SDK_VERSION=$(cat releases.json | /opt/jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").sdk.version")
+          RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.version")
+          SDK_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").sdk.version")
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=tags_chrome::${TAGS_CHROME}
           echo ::set-output name=tags_newrelic::${TAGS_NEWRELIC}
