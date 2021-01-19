@@ -21,9 +21,9 @@ jobs:
           MAJOR=`echo $VERSION | cut -d. -f1`
           MINOR=`echo $VERSION | cut -d. -f2`
           TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${MAJOR}.${MINOR},${DOCKER_IMAGE}:${MAJOR}"
-          TAGS_CHROME="${DOCKER_IMAGE}:${VERSION}-chrome,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome,${DOCKER_IMAGE}:${MAJOR}-chrome,${DOCKER_IMAGE}:chrome"
-          TAGS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-newrelic,${DOCKER_IMAGE}:${MAJOR}-newrelic,${DOCKER_IMAGE}:newrelic"
-          TAGS_CHROME_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-newrelic,${DOCKER_IMAGE}:newrelic-chrome"
+          TAGS_CHROME="${DOCKER_IMAGE}:${VERSION}-chrome,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome,${DOCKER_IMAGE}:${MAJOR}-chrome"
+          TAGS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-newrelic,${DOCKER_IMAGE}:${MAJOR}-newrelic"
+          TAGS_CHROME_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-newrelic"
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
           RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.version")
