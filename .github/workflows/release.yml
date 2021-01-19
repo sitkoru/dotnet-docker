@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container: docker:latest
+    container: ghcr.io/sitkoru/actions-container
     steps:
       - name: Prepare
         id: prep
