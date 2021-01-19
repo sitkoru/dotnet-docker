@@ -1,0 +1,121 @@
+name: "Release"
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container: docker:latest
+    steps:
+      - name: Prepare
+        id: prep
+        shell: bash
+        run: |
+          DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
+          VERSION=${GITHUB_REF#refs/tags/}
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          TAGS_CHROME="${DOCKER_IMAGE}:${VERSION}-chrome"
+          TAGS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-newrelic"
+          TAGS_CHROME_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-newrelic"
+          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+              MINOR=${VERSION%.*}
+              MAJOR=${MINOR%.*}
+              TAGS="$TAGS,${DOCKER_IMAGE}:${MINOR},${DOCKER_IMAGE}:${MAJOR},${DOCKER_IMAGE}:latest"
+              TAGS_CHROME="$TAGS_CHROME,${DOCKER_IMAGE}:${MINOR}-chrome,${DOCKER_IMAGE}:${MAJOR}-chrome,${DOCKER_IMAGE}:chrome"
+              TAGS_NEWRELIC="$TAGS_NEWRELIC,${DOCKER_IMAGE}:${MINOR}-newrelic,${DOCKER_IMAGE}:${MAJOR}-newrelic,${DOCKER_IMAGE}:newrelic"
+              TAGS_CHROME_NEWRELIC="$TAGS_CHROME_NEWRELIC,${DOCKER_IMAGE}:${MINOR}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-newrelic,${DOCKER_IMAGE}:newrelic-chrome"
+          fi
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=tags_chrome::${TAGS_CHROME}
+          echo ::set-output name=tags_newrelic::${TAGS_NEWRELIC}
+          echo ::set-output name=tags_chrome_newrelic::${TAGS_CHROME_NEWRELIC}
+          echo ::set-output name=version::${VERSION}
+          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      - name: Base
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile
+          target: base
+          build-args: |
+            DOTNET_VERSION=${{ steps.prep.outputs.version }}
+          tags: ${{ steps.prep.outputs.tags }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+      - name: Chrome
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile
+          target: chrome
+          build-args: |
+            DOTNET_VERSION=${{ steps.prep.outputs.version }}
+          tags: ${{ steps.prep.outputs.tags_chrome }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+      - name: Newrelic
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile
+          target: newrelic
+          build-args: |
+            DOTNET_VERSION=${{ steps.prep.outputs.version }}
+          tags: ${{ steps.prep.outputs.tags_newrelic }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+      - name: Chrome-Newrelic
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile
+          target: chrome-newrelic
+          build-args: |
+            DOTNET_VERSION=${{ steps.prep.outputs.version }}
+          tags: ${{ steps.prep.outputs.tags_crome_newrelic }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
