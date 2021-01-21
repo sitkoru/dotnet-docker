@@ -23,8 +23,9 @@ jobs:
           chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
           VERSION=${GITHUB_REF#refs/tags/}
-          PUSH=true
-          if [[ -z "$VERSION" ]]; then
+          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            PUSH=true
+          else
              VERSION="${{ github.event.inputs.version }}"
              PUSH=false
           fi
