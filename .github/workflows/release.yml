@@ -21,17 +21,17 @@ jobs:
           MAJOR=`echo $VERSION | cut -d. -f1`
           MINOR=`echo $VERSION | cut -d. -f2`
           TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${MAJOR}.${MINOR},${DOCKER_IMAGE}:${MAJOR}"
-          TAGS_CHROME="${DOCKER_IMAGE}:${VERSION}-chrome,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome,${DOCKER_IMAGE}:${MAJOR}-chrome"
+          TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}-chrome-deps"
           TAGS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-newrelic,${DOCKER_IMAGE}:${MAJOR}-newrelic"
-          TAGS_CHROME_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-newrelic"
+          TAGS_CHROME_DEPS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-deps-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-deps-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-deps-newrelic"
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
           RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.version")
           SDK_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").sdk.version")
           echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=tags_chrome::${TAGS_CHROME}
+          echo ::set-output name=tags_chrome_deps::${TAGS_CHROME_DEPS}
           echo ::set-output name=tags_newrelic::${TAGS_NEWRELIC}
-          echo ::set-output name=tags_chrome_newrelic::${TAGS_CHROME_NEWRELIC}
+          echo ::set-output name=tags_chrome_deps_newrelic::${TAGS_CHROME_DEPS_NEWRELIC}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=runtime_version::${RUNTIME_VERSION}
           echo ::set-output name=sdk_version::${SDK_VERSION}
@@ -65,17 +65,17 @@ jobs:
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-      - name: Chrome
+      - name: Chrome deps
         uses: docker/build-push-action@v2
         with:
           push: true
           context: .
           file: ./Dockerfile
-          target: chrome
+          target: chrome-deps
           build-args: |
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
-          tags: ${{ steps.prep.outputs.tags_chrome }}
+          tags: ${{ steps.prep.outputs.tags_chrome_deps }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
@@ -111,11 +111,11 @@ jobs:
           push: true
           context: .
           file: ./Dockerfile
-          target: chrome-newrelic
+          target: chrome-deps-newrelic
           build-args: |
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
-          tags: ${{ steps.prep.outputs.tags_chrome_newrelic }}
+          tags: ${{ steps.prep.outputs.tags_chrome_deps_newrelic }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}

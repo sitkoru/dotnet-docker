@@ -27,7 +27,7 @@ RUN dotnet-sos install
 HEALTHCHECK --interval=120s --timeout=5s --retries=1 CMD curl --silent --fail http://localhost:80/health || exit 1
 EXPOSE 80
 
-FROM base as chrome
+FROM base as chrome-deps
 
 RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
@@ -44,7 +44,7 @@ RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key a
 FROM base as newrelic
 
 # Install the agent
-RUN apt-get update && apt-get install -y wget ca-certificates gnupg \
+RUN apt-get update && apt-get install -y wget ca-certificates gnupg2 \
     && echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
     && wget https://download.newrelic.com/548C16BF.gpg \
     && apt-key add 548C16BF.gpg \
@@ -58,7 +58,7 @@ ENV CORECLR_ENABLE_PROFILING=1 \
     CORECLR_PROFILER_PATH=/usr/local/newrelic-netcore20-agent/libNewRelicProfiler.so \
     NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
 
-FROM chrome as chrome-newrelic
+FROM chrome as chrome-deps-newrelic
 
 # Install the agent
 RUN apt-get update && apt-get install -y wget ca-certificates gnupg \
