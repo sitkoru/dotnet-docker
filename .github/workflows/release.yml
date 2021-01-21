@@ -24,7 +24,7 @@ jobs:
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
           VERSION=${GITHUB_REF#refs/tags/}
           PUSH=true
-          if [ -z "$VERSION" ] then
+          if [[ -z "$VERSION" ]]; then
              VERSION=${{ github.event.inputs.version }}
              PUSH=false
           fi
