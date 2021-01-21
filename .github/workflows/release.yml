@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - "*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: ".NET version"
+        required: true
 
 jobs:
   deploy:
@@ -18,6 +23,11 @@ jobs:
           chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
           VERSION=${GITHUB_REF#refs/tags/}
+          PUSH=true
+          if [ -z "$VERSION" ] then
+             VERSION=${{ github.event.inputs.version }}
+             PUSH=false
+          fi
           MAJOR=`echo $VERSION | cut -d. -f1`
           MINOR=`echo $VERSION | cut -d. -f2`
           TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${MAJOR}.${MINOR},${DOCKER_IMAGE}:${MAJOR}"
@@ -33,6 +43,7 @@ jobs:
           echo ::set-output name=tags_newrelic::${TAGS_NEWRELIC}
           echo ::set-output name=tags_chrome_deps_newrelic::${TAGS_CHROME_DEPS_NEWRELIC}
           echo ::set-output name=version::${VERSION}
+          echo ::set-output name=push::${PUSH}
           echo ::set-output name=runtime_version::${RUNTIME_VERSION}
           echo ::set-output name=sdk_version::${SDK_VERSION}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
@@ -48,7 +59,7 @@ jobs:
       - name: Base
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ steps.prep.outputs.push }}
           context: .
           file: ./Dockerfile
           target: base
@@ -68,7 +79,7 @@ jobs:
       - name: Chrome deps
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ steps.prep.outputs.push }}
           context: .
           file: ./Dockerfile
           target: chrome-deps
@@ -88,7 +99,7 @@ jobs:
       - name: Newrelic
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ steps.prep.outputs.push }}
           context: .
           file: ./Dockerfile
           target: newrelic
@@ -108,7 +119,7 @@ jobs:
       - name: Chrome-Newrelic
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ steps.prep.outputs.push }}
           context: .
           file: ./Dockerfile
           target: chrome-deps-newrelic
