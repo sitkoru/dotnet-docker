@@ -58,7 +58,7 @@ ENV CORECLR_ENABLE_PROFILING=1 \
     CORECLR_PROFILER_PATH=/usr/local/newrelic-netcore20-agent/libNewRelicProfiler.so \
     NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
 
-FROM chrome as chrome-deps-newrelic
+FROM chrome-deps as chrome-deps-newrelic
 
 # Install the agent
 RUN apt-get update && apt-get install -y wget ca-certificates gnupg \
