@@ -24,7 +24,7 @@ jobs:
           curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
-          VERSION= ${{ matrix.version }}
+          VERSION=${{ matrix.version }}
           REF=${GITHUB_REF#refs/tags/}
           if [[ $REF =~ ^v.*$ ]]; then
             PUSH=true
