@@ -2,18 +2,20 @@ name: "Release"
 
 on:
   push:
+    branches: [master]
     tags:
-      - "*.*.*"
+      - "v*"
+  pull_request:
+    branches: [master]
   workflow_dispatch:
-    inputs:
-      version:
-        description: ".NET version"
-        required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     container: ghcr.io/sitkoru/actions-container
+    strategy:
+      matrix:
+        version: [3.1.11, 5.0.2]
     steps:
       - name: Prepare
         id: prep
@@ -22,11 +24,11 @@ jobs:
           curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
-          VERSION=${GITHUB_REF#refs/tags/}
-          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+          VERSION= {{ matrix.version }}
+          REF=${GITHUB_REF#refs/tags/}
+          if [[ $REF =~ ^v.*$ ]]; then
             PUSH=true
           else
-             VERSION="${{ github.event.inputs.version }}"
              PUSH=false
           fi
           echo VERSION=${VERSION}
