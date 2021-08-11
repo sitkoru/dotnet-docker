@@ -15,7 +15,7 @@ jobs:
     container: ghcr.io/sitkoru/actions-container
     strategy:
       matrix:
-        version: [3.1.18, 5.0.9]
+        version: [3.1.18, 5.0.9, 6.0.0-preview.7]
     steps:
       - name: Prepare
         id: prep
@@ -45,7 +45,7 @@ jobs:
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           echo DOTNET_RELEASE_URL=${DOTNET_RELEASE_URL}
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
-          RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.version")
+          RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.\"version-display\"")
           echo RUNTIME_VERSION=${RUNTIME_VERSION}
           SDK_VERSION=${MAJOR}.${MINOR}
           echo SDK_VERSION=${SDK_VERSION}
