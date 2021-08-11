@@ -47,7 +47,7 @@ jobs:
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
           RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.version")
           echo RUNTIME_VERSION=${RUNTIME_VERSION}
-          SDK_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").sdk.version")
+          SDK_VERSION=${MAJOR}.${MINOR}
           echo SDK_VERSION=${SDK_VERSION}
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=tags_chrome_deps::${TAGS_CHROME_DEPS}
