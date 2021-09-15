@@ -1,0 +1,85 @@
+name: "Release"
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [3.1.18, 5.0.9, 6.0.0-preview.7]
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1.5.1
+      - name: Base
+        uses: docker/build-push-action@v2.6.1
+        with:
+          push: false
+          context: .
+          file: ./Dockerfile
+          target: base
+          build-args: |
+            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
+            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
+      - name: Chrome deps
+        uses: docker/build-push-action@v2.6.1
+        with:
+          push: false
+          context: .
+          file: ./Dockerfile
+          target: chrome-deps
+          build-args: |
+            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
+            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
+      - name: Newrelic
+        uses: docker/build-push-action@v2.6.1
+        with:
+          push: false
+          context: .
+          file: ./Dockerfile
+          target: newrelic
+          build-args: |
+            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
+            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
+      - name: Chrome-Newrelic
+        uses: docker/build-push-action@v2.6.1
+        with:
+          push: false
+          context: .
+          file: ./Dockerfile
+          target: chrome-deps-newrelic
+          build-args: |
+            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
+            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
+  release:
+    name: Release
+    runs-on: self-hosted
+    container: ghcr.io/sitkoru/actions-container
+    needs: [ build ]
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install node.js
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: '16'
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          extra_plugins: |
+            @sitkoru/semantic-release-config
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GIT_AUTHOR_NAME: ${{ secrets.BOT_NAME }}
+          GIT_AUTHOR_EMAIL: ${{ secrets.BOT_EMAIL }}
+          GIT_COMMITTER_NAME: ${{ secrets.BOT_NAME }}
+          GIT_COMMITTER_EMAIL: ${{ secrets.BOT_EMAIL }}

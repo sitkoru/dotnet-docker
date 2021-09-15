@@ -1,18 +1,13 @@
 name: "Release"
 
 on:
-  push:
-    branches: [master]
-    tags:
-      - "v*"
-  pull_request:
-    branches: [master]
-  workflow_dispatch:
+  release:
+    types:
+      - published
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container: ghcr.io/sitkoru/actions-container
     strategy:
       matrix:
         version: [3.1.18, 5.0.9, 6.0.0-preview.7]
@@ -64,8 +59,8 @@ jobs:
         uses: docker/login-action@v1.10.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: ${{ secrets.BOT_NAME }}
+          password: ${{ secrets.BOT_TOKEN }}
       - name: Base
         uses: docker/build-push-action@v2.6.1
         with:
