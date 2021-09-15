@@ -12,6 +12,7 @@ jobs:
       matrix:
         version: [3.1.18, 5.0.9, 6.0.0-preview.7]
     steps:
+      - uses: actions/checkout@v2.3.4
       - name: Prepare
         id: prep
         shell: bash
@@ -52,7 +53,6 @@ jobs:
           echo ::set-output name=runtime_version::${RUNTIME_VERSION}
           echo ::set-output name=sdk_version::${SDK_VERSION}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-      - uses: actions/checkout@v2.3.4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1.6.0
       - name: Login to GitHub Container Registry
