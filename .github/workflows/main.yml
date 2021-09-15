@@ -80,8 +80,7 @@ jobs:
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
   release:
     name: Release
-    runs-on: self-hosted
-    container: ghcr.io/sitkoru/actions-container
+    runs-on: ubuntu-latest
     needs: [ build ]
     if: ${{ github.event_name == 'push' }}
     steps:
