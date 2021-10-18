@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/sitkoru/dotnet-docker/compare/v3.2.0...v3.3.0) (2021-10-18)
+
+
+### Features
+
+* **.net:** update .NET to 3.1.20, 5.0.11, 6.0.0-rc.2 ([62c1b05](https://github.com/sitkoru/dotnet-docker/commit/62c1b054ee77ff0815696686970cd7a7334c25d3))
+
 # [3.2.0](https://github.com/sitkoru/dotnet-docker/compare/v3.1.0...v3.2.0) (2021-09-15)
 
 
