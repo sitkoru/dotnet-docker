@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/sitkoru/dotnet-docker/compare/v3.3.0...v3.4.0) (2021-10-19)
+
+
+### Features
+
+* **heathchecks:** remove default health check from container ([fff1e52](https://github.com/sitkoru/dotnet-docker/commit/fff1e5299b19379b58449dfadf3adda35565d6ae))
+
 # [3.3.0](https://github.com/sitkoru/dotnet-docker/compare/v3.2.0...v3.3.0) (2021-10-18)
 
 
