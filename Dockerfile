@@ -24,7 +24,6 @@ COPY --from=tools-install /dotnetcore-tools /opt/dotnetcore-tools
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 RUN dotnet-sos install
 
-HEALTHCHECK --interval=120s --timeout=5s --retries=1 CMD curl --silent --fail http://localhost:80/health || exit 1
 EXPOSE 80
 
 FROM base as chrome-deps
