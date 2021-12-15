@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/sitkoru/dotnet-docker/compare/v3.6.0...v3.7.0) (2021-12-15)
+
+
+### Features
+
+* **chrome-deps:** libxshmfence1 for newer chrome ([7fdf0e0](https://github.com/sitkoru/dotnet-docker/commit/7fdf0e0e7252024c229acd5ef689edab2d674daa))
+
 # [3.6.0](https://github.com/sitkoru/dotnet-docker/compare/v3.5.0...v3.6.0) (2021-12-15)
 
 
