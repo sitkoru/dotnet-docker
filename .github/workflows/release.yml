@@ -12,7 +12,7 @@ jobs:
       matrix:
         version: [3.1.22, 5.0.13, 6.0.1]
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v2
       - name: Prepare
         id: prep
         shell: bash
@@ -54,15 +54,15 @@ jobs:
           echo ::set-output name=sdk_version::${SDK_VERSION}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.6.0
+        uses: docker/setup-buildx-action@v1
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
+        uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ secrets.BOT_NAME }}
           password: ${{ secrets.BOT_TOKEN }}
       - name: Base
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2
         with:
           push: true
           context: .
@@ -82,7 +82,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
       - name: Chrome deps
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2
         with:
           push: true
           context: .
@@ -102,7 +102,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
       - name: Newrelic
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2
         with:
           push: true
           context: .
@@ -122,7 +122,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
       - name: Chrome-Newrelic
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2
         with:
           push: true
           context: .
