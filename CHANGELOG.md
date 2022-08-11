@@ -1,3 +1,10 @@
+# [3.13.0](https://github.com/sitkoru/dotnet-docker/compare/v3.12.0...v3.13.0) (2022-08-11)
+
+
+### Features
+
+* **dotnet:** 6.0.8 and 3.1.28 ([5afdbd6](https://github.com/sitkoru/dotnet-docker/commit/5afdbd6cdda48849173ca7e9a73d9dfd7b71a8ac))
+
 # [3.12.0](https://github.com/sitkoru/dotnet-docker/compare/v3.11.0...v3.12.0) (2022-07-26)
 
 
