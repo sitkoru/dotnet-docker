@@ -39,7 +39,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Base
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: false
           context: .
@@ -49,7 +49,7 @@ jobs:
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
       - name: Chrome deps
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: false
           context: .
@@ -59,7 +59,7 @@ jobs:
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
       - name: Newrelic
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: false
           context: .
@@ -69,7 +69,7 @@ jobs:
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
       - name: Chrome-Newrelic
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: false
           context: .
