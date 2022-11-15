@@ -1,3 +1,11 @@
+# [3.16.0](https://github.com/sitkoru/dotnet-docker/compare/v3.15.0...v3.16.0) (2022-11-15)
+
+
+### Features
+
+* **.net:** 6.0.11 and 7.0.0 ([cd5ece6](https://github.com/sitkoru/dotnet-docker/commit/cd5ece6de4c7b0f564b474e580ae7eefb63c317a))
+* **newrelic:** drop newrelic ([0dc8407](https://github.com/sitkoru/dotnet-docker/commit/0dc84078f5d37a41d45bea7d5c03a9afd4d8a62c))
+
 # [3.15.0](https://github.com/sitkoru/dotnet-docker/compare/v3.14.0...v3.15.0) (2022-10-17)
 
 
