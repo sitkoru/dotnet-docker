@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [3.1.30, 5.0.17, 6.0.10]
+        version: [3.1.30, 5.0.17, 6.0.11, 7.0.0]
     steps:
       - uses: actions/checkout@v3
       - name: Prepare
@@ -30,13 +30,9 @@ jobs:
           if [[ $REF =~ ^v.*$ ]]; then
             TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${MAJOR}.${MINOR},${DOCKER_IMAGE}:${MAJOR}"
             TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}-chrome-deps"
-            TAGS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-newrelic,${DOCKER_IMAGE}:${MAJOR}-newrelic"
-            TAGS_CHROME_DEPS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-deps-newrelic,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-deps-newrelic,${DOCKER_IMAGE}:${MAJOR}-chrome-deps-newrelic"
           else
             TAGS="${DOCKER_IMAGE}:${VERSION}-${{ github.run_id }}"
             TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps-${{ github.run_id }}"
-            TAGS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-newrelic-${{ github.run_id }}"
-            TAGS_CHROME_DEPS_NEWRELIC="${DOCKER_IMAGE}:${VERSION}-chrome-deps-newrelic-${{ github.run_id }}"
           fi
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           echo DOTNET_RELEASE_URL=${DOTNET_RELEASE_URL}
@@ -47,8 +43,6 @@ jobs:
           echo SDK_VERSION=${SDK_VERSION}
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=tags_chrome_deps::${TAGS_CHROME_DEPS}
-          echo ::set-output name=tags_newrelic::${TAGS_NEWRELIC}
-          echo ::set-output name=tags_chrome_deps_newrelic::${TAGS_CHROME_DEPS_NEWRELIC}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=runtime_version::${RUNTIME_VERSION}
           echo ::set-output name=sdk_version::${SDK_VERSION}
@@ -92,46 +86,6 @@ jobs:
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
           tags: ${{ steps.prep.outputs.tags_chrome_deps }}
-          labels: |
-            org.opencontainers.image.title=${{ github.event.repository.name }}
-            org.opencontainers.image.description=${{ github.event.repository.description }}
-            org.opencontainers.image.url=${{ github.event.repository.html_url }}
-            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
-            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-      - name: Newrelic
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          context: .
-          file: ./Dockerfile
-          target: newrelic
-          build-args: |
-            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
-            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
-          tags: ${{ steps.prep.outputs.tags_newrelic }}
-          labels: |
-            org.opencontainers.image.title=${{ github.event.repository.name }}
-            org.opencontainers.image.description=${{ github.event.repository.description }}
-            org.opencontainers.image.url=${{ github.event.repository.html_url }}
-            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
-            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-      - name: Chrome-Newrelic
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          context: .
-          file: ./Dockerfile
-          target: chrome-deps-newrelic
-          build-args: |
-            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
-            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
-          tags: ${{ steps.prep.outputs.tags_chrome_deps_newrelic }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [3.1.30, 5.0.17, 6.0.10]
+        version: [3.1.30, 5.0.17, 6.0.11, 7.0.0]
     steps:
       - uses: actions/checkout@v3
       - name: Prepare
@@ -55,26 +55,6 @@ jobs:
           context: .
           file: ./Dockerfile
           target: chrome-deps
-          build-args: |
-            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
-            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
-      - name: Newrelic
-        uses: docker/build-push-action@v3
-        with:
-          push: false
-          context: .
-          file: ./Dockerfile
-          target: newrelic
-          build-args: |
-            RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
-            SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
-      - name: Chrome-Newrelic
-        uses: docker/build-push-action@v3
-        with:
-          push: false
-          context: .
-          file: ./Dockerfile
-          target: chrome-deps-newrelic
           build-args: |
             RUNTIME_VERSION=${{ steps.prep.outputs.runtime_version }}
             SDK_VERSION=${{ steps.prep.outputs.sdk_version }}
