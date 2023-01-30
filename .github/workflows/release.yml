@@ -56,7 +56,7 @@ jobs:
           username: ${{ secrets.BOT_NAME }}
           password: ${{ secrets.BOT_TOKEN }}
       - name: Base
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           context: .
@@ -76,7 +76,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
       - name: Chrome deps
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           context: .
