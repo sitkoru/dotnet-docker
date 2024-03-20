@@ -24,6 +24,8 @@ COPY --from=tools-install /dotnetcore-tools /opt/dotnetcore-tools
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 RUN dotnet-sos install
 
+EXPOSE 80
+
 FROM base as chrome-deps
 
 RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
