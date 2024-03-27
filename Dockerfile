@@ -26,6 +26,9 @@ RUN dotnet-sos install
 
 EXPOSE 80
 
+# https://github.com/dotnet/runtime/issues/98797
+COPY openssl.cnf /etc/ssl/openssl.cnf
+
 FROM base as chrome-deps
 
 RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
