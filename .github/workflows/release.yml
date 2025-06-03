@@ -20,6 +20,7 @@ jobs:
           curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
+          DOCKER_IMAGE_YANDEX=cr.yandex/crp7mlmqdq7ehq1gafh4/0xdev/dotnet-runtime
           VERSION=${{ matrix.version }}
           echo VERSION=${VERSION}
           MAJOR=`echo $VERSION | cut -d. -f1`
@@ -30,10 +31,16 @@ jobs:
           if [[ $REF =~ ^v.*$ ]]; then
             TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${MAJOR}.${MINOR},${DOCKER_IMAGE}:${MAJOR}"
             TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}-chrome-deps"
+            TAGS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION},${DOCKER_IMAGE_YANDEX}:${MAJOR}.${MINOR},${DOCKER_IMAGE_YANDEX}:${MAJOR}"
+            TAGS_CHROME_DEPS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION}-chrome-deps,${DOCKER_IMAGE_YANDEX}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAG_YANDEX}:${MAJOR}-chrome-deps"
           else
             TAGS="${DOCKER_IMAGE}:${VERSION}-${{ github.run_id }}"
             TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps-${{ github.run_id }}"
+            TAGS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION}-${{ github.run_id }}"
+            TAGS_CHROME_DEPS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION}-chrome-deps-${{ github.run_id }}"
           fi
+          TAGS_FINAL="$TAGS,$TAGS_YANDEX"
+          TAGS_CHROME_DEPS_FINAL="$TAGS_CHROME_DEPS,$TAGS_CHROME_DEPS_YANDEX"
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           echo DOTNET_RELEASE_URL=${DOTNET_RELEASE_URL}
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
@@ -41,8 +48,8 @@ jobs:
           echo RUNTIME_VERSION=${RUNTIME_VERSION}
           SDK_VERSION=${MAJOR}.${MINOR}
           echo SDK_VERSION=${SDK_VERSION}
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=tags_chrome_deps::${TAGS_CHROME_DEPS}
+          echo ::set-output name=tags::${TAGS_FINAL}
+          echo ::set-output name=tags_chrome_deps::${TAGS_CHROME_DEPS_FINAL}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=runtime_version::${RUNTIME_VERSION}
           echo ::set-output name=sdk_version::${SDK_VERSION}
@@ -55,6 +62,12 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.BOT_NAME }}
           password: ${{ secrets.BOT_TOKEN }}
+      - name: Login to Yandex Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.YANDEX_DOCKER_REGISTRY_URL }}
+          username: ${{ secrets.YANDEX_DOCKER_REGISTRY_LOGIN }}
+          password: ${{ secrets.YANDEX_DOCKER_REGISTRY_TOKEN }}
       - name: Base
         uses: docker/build-push-action@v6
         with:
