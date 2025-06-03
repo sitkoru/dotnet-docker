@@ -20,7 +20,7 @@ jobs:
           curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
-          DOCKER_IMAGE_YANDEX=cr.yandex/crp7mlmqdq7ehq1gafh4/0xdev/dotnet-runtime
+          DOCKER_IMAGE_YANDEX=${{ secrets.YANDEX_DOCKER_REGISTRY_URL }}/0xdev/dotnet-runtime
           VERSION=${{ matrix.version }}
           echo VERSION=${VERSION}
           MAJOR=`echo $VERSION | cut -d. -f1`
@@ -32,7 +32,7 @@ jobs:
             TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${MAJOR}.${MINOR},${DOCKER_IMAGE}:${MAJOR}"
             TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAGE}:${MAJOR}-chrome-deps"
             TAGS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION},${DOCKER_IMAGE_YANDEX}:${MAJOR}.${MINOR},${DOCKER_IMAGE_YANDEX}:${MAJOR}"
-            TAGS_CHROME_DEPS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION}-chrome-deps,${DOCKER_IMAGE_YANDEX}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAG_YANDEX}:${MAJOR}-chrome-deps"
+            TAGS_CHROME_DEPS_YANDEX="${DOCKER_IMAGE_YANDEX}:${VERSION}-chrome-deps,${DOCKER_IMAGE_YANDEX}:${MAJOR}.${MINOR}-chrome-deps,${DOCKER_IMAGE_YANDEX}:${MAJOR}-chrome-deps"
           else
             TAGS="${DOCKER_IMAGE}:${VERSION}-${{ github.run_id }}"
             TAGS_CHROME_DEPS="${DOCKER_IMAGE}:${VERSION}-chrome-deps-${{ github.run_id }}"
