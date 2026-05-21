@@ -13,13 +13,11 @@ jobs:
       matrix:
         version: [8.0.27, 9.0.16, 10.0.8]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - name: Prepare
         id: prep
         shell: bash
         run: |
-          curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-          chmod +x jq
           DOCKER_IMAGE=ghcr.io/sitkoru/dotnet-runtime
           VERSION=${{ matrix.version }}
           echo VERSION=${VERSION}
@@ -30,14 +28,14 @@ jobs:
           DOTNET_RELEASE_URL=https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${MAJOR}.${MINOR}/releases.json
           echo DOTNET_RELEASE_URL=${DOTNET_RELEASE_URL}
           curl -L -o releases.json ${DOTNET_RELEASE_URL}
-          RUNTIME_VERSION=$(cat releases.json | ./jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.\"version-display\"")
+          RUNTIME_VERSION=$(jq -r ".releases[] | select(.\"release-version\"==\"${VERSION}\").runtime.\"version-display\"" releases.json)
           echo RUNTIME_VERSION=${RUNTIME_VERSION}
           SDK_VERSION=${MAJOR}.${MINOR}
           echo SDK_VERSION=${SDK_VERSION}
-          echo ::set-output name=version::${VERSION}
-          echo ::set-output name=runtime_version::${RUNTIME_VERSION}
-          echo ::set-output name=sdk_version::${SDK_VERSION}
-          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "runtime_version=${RUNTIME_VERSION}" >> $GITHUB_OUTPUT
+          echo "sdk_version=${SDK_VERSION}" >> $GITHUB_OUTPUT
+          echo "created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Base
@@ -67,7 +65,7 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
