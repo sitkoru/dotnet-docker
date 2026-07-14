@@ -12,7 +12,7 @@ jobs:
       matrix:
         version: [8.0.28, 9.0.17, 10.0.9]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Prepare
         id: prep
         shell: bash
