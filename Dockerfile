@@ -18,7 +18,16 @@ RUN apt-get update \
     curl \
     gnupg2 \
     procps \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Installing Yandex Cloud Certificates
+RUN mkdir -p /usr/local/share/ca-certificates/Yandex/ \
+    && curl -sSL "https://storage.yandexcloud.net/cloud-certs/RootCA.pem" \
+     -o /usr/local/share/ca-certificates/Yandex/RootCA.crt \
+    && curl -sSL "https://storage.yandexcloud.net/cloud-certs/IntermediateCA.pem" \
+     -o /usr/local/share/ca-certificates/Yandex/IntermediateCA.crt \
+    && update-ca-certificates
 
 COPY --from=tools-install /dotnetcore-tools /opt/dotnetcore-tools
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
